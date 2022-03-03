@@ -1,0 +1,7 @@
+{
+  "name": "DigitalSeva",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
