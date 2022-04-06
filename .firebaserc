@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "digitalseva-4829d": {
+      "hosting": {
+        "app": [
+          "digitalseva-4829d"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "digitalseva-4829d"
+  }
+}
