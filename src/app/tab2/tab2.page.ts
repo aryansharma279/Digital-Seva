@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { DataService} from '../services/data.service';
+import { ModalService } from '../modal/modal.service';
+import { BookservicePage } from './bookservice/bookservice.page';
 
 @Component({
   selector: 'app-tab2',
@@ -6,7 +9,33 @@ import { Component } from '@angular/core';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  allServices: any[];
+  constructor(
+    private dataService : DataService,
+    private modalService: ModalService
+  ) {}
 
-  constructor() {}
+  ngOnInit() {
+  
+      this.getAllServices();
+      
+    
+  }
+  bookService(service) {
+    console.log(" Btn Click working");
+    this.modalService.presentModal(
+      BookservicePage,
+      {
+        service: service,
+      },
+    );
 
+  }
+  getAllServices() {
+    this.dataService.getAllServices().on('value', (snapshot) => {
+      this.allServices = this.dataService.extractServices(snapshot);
+    });
+
+    console.log('get all Services', this.allServices);
+  }
 }

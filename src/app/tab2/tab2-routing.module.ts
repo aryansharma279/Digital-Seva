@@ -6,6 +6,10 @@ const routes: Routes = [
   {
     path: '',
     component: Tab2Page,
+  },
+  {
+    path: 'bookservice',
+    loadChildren: () => import('./bookservice/bookservice.module').then( m => m.BookservicePageModule)
   }
 ];
 

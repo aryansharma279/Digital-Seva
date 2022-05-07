@@ -1,0 +1,110 @@
+.container {
+
+
+    * {
+        // font-size: 14px;
+        font-weight: 500;
+    }
+
+
+    ion-card {
+        width: 100%;
+    }
+
+    .meetings-area {
+        padding-top: 10px;
+    }
+
+    .video-icon {
+        background: #EFEFEF;
+
+    }
+    .service-name {
+        margin-top: 9px;
+        padding: 0px;
+    }
+    .name {
+      
+        font-size: 20px;
+        font-weight: bolder;
+     
+    }
+
+
+    .products {
+        border-top-style: solid;
+        border-top-color: rgba(0, 0, 0, 0.2);
+
+        ion-label {
+            padding: 10px;
+        }
+    }
+
+
+    .time-area {
+        padding-left: 10px;
+
+        ion-icon {
+            position: relative;
+            top: 2px;
+        }
+    }
+
+
+    ion-icon.video {
+        padding: 5px;
+        color: #fff;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.5);
+        margin: 10px;
+    }
+    .time-req {
+        padding-bottom: 18px;
+    padding-top: 18px;
+    }
+    .call-duration {
+        
+        background: rgba(1, 168, 124, 0.08);
+        border-radius: 5px;
+        color: #00000080;
+         padding: 3px;
+        position: relative;
+        bottom: 5px;
+        font-size: 12px;
+        text-align: center;
+
+        span {
+            color: #01A87C
+        }
+
+    }
+
+    .button {
+
+        &-start,
+        &-share {
+
+            /* ddd */
+
+            border: 1px solid #DDDDDD;
+            box-sizing: border-box;
+            border-radius: 5px;
+            float: right;
+            margin-right: 15px;
+        }
+
+        &-start {
+            --background: #01A87C;
+            --color: #fff;
+        }
+
+        &-share {
+            --background: #fff;
+            --color: #000;
+            position: relative;
+            bottom: 10px;
+        }
+    }
+
+
+}

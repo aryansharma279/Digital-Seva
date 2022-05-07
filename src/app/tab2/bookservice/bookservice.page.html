@@ -1,0 +1,53 @@
+<ion-header >
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button (click)="dismiss()" defaultHref="tabs/tab2"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Book
+            {{service.name}} Service</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container>
+        <ion-card>
+            <ion-list>
+                <ion-item>
+                    <ion-label>Name :</ion-label>
+                    <ion-label>{{service.name}}</ion-label>
+                </ion-item>
+                  
+                <ng-container>
+                    <h3>Description</h3>
+                    <ion-textarea [disabled]="true">{{service.description}}</ion-textarea>
+                </ng-container>
+                <ion-item>
+                  <ion-label>Processing Time :</ion-label>
+                  <ion-label>{{service.time}} Days</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Charges :</ion-label>
+                <ion-label>{{service.charges}} Rs</ion-label>
+            </ion-item>
+            
+                <ion-row  style="justify-content:center;">
+                    <ion-col size="4">
+                      <ion-button (click)="editService(service)" color="primary">
+                        <ion-icon name='arrow-forward-outline'></ion-icon>
+                        Proceed
+                      </ion-button>
+                    </ion-col>
+                    <ion-col size="4" text-right>
+                      <ion-button color="danger" (click)="dismiss()">
+                        <ion-icon name='close-outline'></ion-icon>
+                        Cancel
+                      </ion-button>
+                      
+                    </ion-col>
+                  </ion-row>
+        
+
+            </ion-list>
+        </ion-card>
+    </ng-container>
+</ion-content>
