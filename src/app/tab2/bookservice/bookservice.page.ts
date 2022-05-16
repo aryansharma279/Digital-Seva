@@ -7,8 +7,10 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./bookservice.page.scss'],
 })
 export class BookservicePage implements OnInit {
-  allDocuments: any;
-  constructor(private modalCtrl: ModalController) { }
+
+  constructor(private modalCtrl: ModalController) {
+    
+   }
 
   ngOnInit() {
   }
@@ -18,4 +20,5 @@ export class BookservicePage implements OnInit {
  
   } 
   
+ 
 }
