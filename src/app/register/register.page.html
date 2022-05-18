@@ -5,5 +5,17 @@
 </ion-header>
 
 <ion-content>
+ <form [formGroup]="credentials">
+    <ion-card>
+  
+      <ion-item fill="solid" class="ion-margin-bottom">
+        <ion-input type="email" placeholder="Enter Your Email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item fill="solid" class="ion-margin-bottom">
+        <ion-input type="password" placeholder="Enter Your Password" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-button expand="full" [disabled]="!credentials.valid" type="button" (click)="register()">Register</ion-button>
+    </ion-card>
 
+ </form>
 </ion-content>

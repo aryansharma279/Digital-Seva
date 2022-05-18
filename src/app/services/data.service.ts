@@ -18,6 +18,35 @@ import {AngularFireDatabase} from '@angular/fire/compat/database/';
     getAllServices () {
       return this.dbRef.ref(`${this.dbpath}/services`);
     }
+    createUser(payload) {
+      return this.dbRef
+        .ref(`${this.dbpath}/users/${payload}`)
+     
+        .set(payload, (error) => {
+          if (error) {
+            // The write failed...
+            console.log('error while adding the user', error);
+            return false;
+          } else {
+            // Data saved successfully!
+            console.log('user Uploaded !');
+            return true;
+          }
+        });
+    }
+    editService(payload,user) {
+      // Get a key for a new Post.
+      // var newPostKey = this.dbRef.ref(`${this.dbPath}/games/${gametype}`).child(`${payload.name}`).push().key;
+  
+      // Write the new post's data simultaneously in the posts list and the user's post list.
+      var updates = {};
+      updates[`${this.dbpath}/users/${payload}/email`] =
+        user.email;
+       
+      // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+  
+      return this.dbRef.ref().update(updates);
+    }
     // updat
     extractServices(snapshot) {
       const services = [];

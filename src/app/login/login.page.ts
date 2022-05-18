@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { timeStamp } from 'console';
+
 import { AuthService } from '../services/auth.service';
+import { DataService } from '../services/data.service';
+import { Auth } from '@angular/fire/auth';
+
 
 @Component({
   selector: 'app-login',
@@ -13,11 +16,13 @@ import { AuthService } from '../services/auth.service';
 export class LoginPage implements OnInit {
  credentials: FormGroup;
   constructor(
+    private auth: Auth,
     private fb: FormBuilder,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private dataService: DataService
   ) { }
 
   get email() {
@@ -34,19 +39,10 @@ export class LoginPage implements OnInit {
       password: ['',[Validators.required, Validators.minLength(6)]],
     })
   }
-  async register() {
-    const loading = await this.loadingCtrl.create();
-    await loading.present();
-
-    const user = await this.authService.register(this.credentials.value);
-    await loading.dismiss();
-
-    if(user) {
-      this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true});
-    }
-    else  {
-      this.showAlert('Registration Failed', 'Please Try Again !');
-    }
+  register() {
+   
+      this.router.navigateByUrl('/register', { replaceUrl: true});
+      // this.router.navigate(['/register']);
   }
 
   async login() {
