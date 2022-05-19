@@ -35,7 +35,7 @@ export class Tab2Page {
   }
   getAllServices() {
     this.dataService.getAllServices().on('value', (snapshot) => {
-      this.render = 'render here'
+      // this.render = 'render here'
       console.log('snapshot', snapshot);
 
       this.allServices = this.dataService.extractServices(snapshot);

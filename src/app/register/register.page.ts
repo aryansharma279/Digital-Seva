@@ -33,9 +33,10 @@ export class RegisterPage implements OnInit {
     const loading = await this.loadingCtrl.create();
     await loading.present();
 
-    const user = await this.authService.register(this.credentials.value);
+    const user = this.authService.register(this.credentials.value);
+    console.log('user registered', user);
     await loading.dismiss();
-    console.log('user details',user);
+    // console.log('user details',user);
     const crtUser = this.auth.currentUser;
     console.log('user Current',crtUser);
     const userMail = crtUser.email.split("@");

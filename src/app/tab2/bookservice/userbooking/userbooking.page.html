@@ -12,19 +12,18 @@
 <ng-container>
   <ion-card>
     <ion-list>
-
-      {{service.documents | json}
       <ion-item>
         <ion-label>Your Full Name :</ion-label>
-        <ion-input ></ion-input>
+
+        <ion-input [(ngModel)]="usersDetails.name"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Age :</ion-label>
-        <ion-input></ion-input>
+        <ion-input [(ngModel)]="usersDetails.age"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Address :</ion-label>
-        <ion-input></ion-input>
+        <ion-input [(ngModel)]="usersDetails.address"></ion-input>
       </ion-item> 
       <ion-item>
         <ion-label>Upload Documents :</ion-label>
@@ -33,6 +32,8 @@
       <ion-item *ngFor="let document of service.documents; let i = index">{{i+1}}. {{document}}</ion-item>
     </ng-container>
     </ion-list>
+
+    <ion-button (click)="save()">Save</ion-button>
   </ion-card>
 </ng-container>
 </ion-content>

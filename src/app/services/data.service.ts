@@ -72,4 +72,53 @@ import {AngularFireDatabase} from '@angular/fire/compat/database/';
         return [];
       }
     }
+
+
+    updateUserInfo(email,user) {
+      const emailSplitted = email.split('@')[0];
+      return this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}`).update(user)
+
+    }
+    
+    updateBooking(email,booking) {
+      /*
+         name
+         age
+         email
+         charges
+         service
+         status: 'approval'
+
+      
+      */
+
+
+      const emailSplitted = email.split('@')[0];
+      return this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}/bookings`).update(booking)
+
+
+    }
+
+    updateStatus(email, status) {
+      const emailSplitted = email.split('@')[0];
+      return this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}/bookings`).update({
+        status: status
+      })
+
+    }
+
+    
+
+    getUserInfo(email) {
+
+       const emailSplitted = email.split('@')[0];
+
+      console.log('path', `${this.dbpath}/users/${emailSplitted}`)
+      return this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}`);
+
+      2
+        // dnref/digitalseva/users/tushark/bookings - => {}
+
+
+    }
     }
