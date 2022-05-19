@@ -12,9 +12,11 @@
 <ng-container>
   <ion-card>
     <ion-list>
+
+      {{service.documents | json}
       <ion-item>
         <ion-label>Your Full Name :</ion-label>
-        <ion-input></ion-input>
+        <ion-input ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Age :</ion-label>
@@ -26,10 +28,9 @@
       </ion-item> 
       <ion-item>
         <ion-label>Upload Documents :</ion-label>
-       
     </ion-item>
     <ng-container>
-      <ion-item *ngFor="let document of service.documents let i = index">{{i+1}}. {{document}}</ion-item>
+      <ion-item *ngFor="let document of service.documents; let i = index">{{i+1}}. {{document}}</ion-item>
     </ng-container>
     </ion-list>
   </ion-card>

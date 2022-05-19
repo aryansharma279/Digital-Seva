@@ -10,6 +10,8 @@ import { BookservicePage } from './bookservice/bookservice.page';
 })
 export class Tab2Page {
   allServices: any[];
+
+  render = '';
   constructor(
     private dataService : DataService,
     private modalService: ModalService
@@ -33,7 +35,11 @@ export class Tab2Page {
   }
   getAllServices() {
     this.dataService.getAllServices().on('value', (snapshot) => {
+      this.render = 'render here'
+      console.log('snapshot', snapshot);
+
       this.allServices = this.dataService.extractServices(snapshot);
+      
     });
 
     console.log('get all Services', this.allServices);
