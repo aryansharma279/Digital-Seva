@@ -32,6 +32,7 @@ export class UserbookingPage implements OnInit {
     base64Img : string;
     userImg : string;
     downloadURL : any;
+    fileUploads : any = {};
 
 
     constructor(private alertCtrl : AlertController, private loadingCtrl : LoadingController, private router : Router, private mediaCapture : MediaCapture, private plt : Platform, private toastCtrl : ToastController, private file : File, private storage : AngularFireStorage, private camera : Camera, private actionSheetController : ActionSheetController, private modalCtrl : ModalController, private auth : Auth, private dataService : DataService) {
@@ -52,6 +53,15 @@ export class UserbookingPage implements OnInit {
         this.checkifTheDataExistedOrNot();
         this.getBookings();
         this.getAdminBookings();
+
+        // fetch uploads
+
+        this.service.documents.forEach((service) => {
+            this.fileUploads[service] = '';
+        })
+
+
+        console.log('file uploads', this.fileUploads);
 
 
     }
@@ -118,22 +128,36 @@ export class UserbookingPage implements OnInit {
         });
     }
 
-    upload(): void {
+    async upload() { // start loader
+        const loader = await this.loadingCtrl.create({
+            message: 'Uploading.. Please wait'
+        })
+        await loader.present();
         var currentDate = Date.now();
         const file: any = this.base64ToImage(this.base64Img);
-        const filePath = `Images/${currentDate}`;
+        const filePath = `Images/users/${
+            this.auth.currentUser.uid
+        }/${
+            this.type
+        }/${currentDate}`;
         const fileRef = this.storage.ref(filePath);
 
-        const task = this.storage.upload(`Images/${currentDate}`, file);
+        const task = this.storage.upload(filePath, file);
 
-        
+
         task.snapshotChanges().pipe(finalize(() => {
             this.downloadURL = fileRef.getDownloadURL();
-            this.downloadURL.subscribe(downloadURL => {
+            this.downloadURL.subscribe(async downloadURL => {
                 if (downloadURL) {
                     this.showSuccesfulUploadAlert();
                 }
                 console.log(downloadURL);
+
+                // end loader
+                await loader.dismiss();
+                this.fileUploads[this.type] = downloadURL;
+
+                // update url in the url of pancard
             });
         })).subscribe(url => {
             if (url) {
@@ -146,8 +170,8 @@ export class UserbookingPage implements OnInit {
         const alert = await this.alertCtrl.create({
             cssClass: 'basic-alert',
             header: 'Uploaded',
-            subHeader: 'Image uploaded successful to Firebase storage',
-            message: 'Check Firebase storage.',
+            subHeader: 'Image uploaded successful',
+            message: 'Done',
             buttons: ['OK']
         });
 
@@ -330,6 +354,7 @@ export class UserbookingPage implements OnInit {
             } else {
                 console.log('details dont  exist')
 
+
                 await loading.dismiss();
             }
 
@@ -363,52 +388,83 @@ export class UserbookingPage implements OnInit {
     }
     save() {
 
+        console.log('this.bookings', this.bookings);
+        console.log('this.admin bookings', this.adminBookings)
 
-        const result1 = this.checkIfBookingsExist(this.bookings);
-        this.usersDetails['documents'] = [];
-        this.usersDetails['status'] = 'pending';
 
-        if (result1.length > 0) { // booking existed
-            alert('You have already booked this service')
-            return;
+        const keys = Object.keys(this.fileUploads);
+
+
+        const pendingUploads = keys.filter((key) => {
+
+            return this.fileUploads[key] === '';
+        })
+        console.log('pending upload', pendingUploads);
+
+        if (pendingUploads.length > 0) {
+            alert('Please upload the required documents.')
         } else {
-            this.bookings.push({
-                ...this.usersDetails,
-                ...this.service
-            })
+
+            this.usersDetails['documents'] = this.fileUploads;
+
+            const result1 = this.checkIfBookingsExist(this.bookings);
+
+            this.usersDetails['status'] = 'pending';
+
+            if (result1.length > 0) { // booking existed
+                alert('You have already booked this service')
+                return;
+            } else {
+                this.bookings.push({
+                    ...this.usersDetails,
+                    ...this.service
+                })
+            }
+
+            console.log('this.adminBookings', this.adminBookings);
+
+            const result2 = this.checkIfBookingsExisForAdmin(this.adminBookings);
+
+            if (result2.length > 0) { // booking existed
+                alert('You have already booked this service from admin')
+
+                return;
+            } else {
+                const admin = {
+                    ...this.usersDetails,
+                    ...this.service
+                };
+                admin['email'] = this.auth.currentUser.email;
+                this.adminBookings.push(admin)
+
+            }
+            // this.
+
+
+            console.log('payload for user info', this.usersDetails);
+
+
+            const payload = {
+                email: this.auth.currentUser.email,
+                userBookings: this.bookings,
+                adminBookings: this.adminBookings
+            }
+
+            console.log('file upload', this.fileUploads);
+
+            // check for the object keys for pending
+
+
+            console.log('this.user details', this.usersDetails);
+            this.saveApi(payload);
+
+
         }
 
-        console.log('this.adminBookings', this.adminBookings);
 
-        const result2 = this.checkIfBookingsExisForAdmin(this.adminBookings);
+    }
 
-        if (result2.length > 0) { // booking existed
-            alert('You have already booked this service from admin')
-
-            return;
-        } else {
-            const admin = {
-                ...this.usersDetails,
-                ...this.service
-            };
-            admin['email'] = this.auth.currentUser.email;
-            this.adminBookings.push(admin)
-
-        }
-        // this.
-
-
-        console.log('payload for user info', this.usersDetails);
-
-
-        const payload = {
-            email: this.auth.currentUser.email,
-            userBookings: this.bookings,
-            adminBookings: this.adminBookings
-        }
-        // console.log('payload to send', payload);
-
-
+    saveApi(payload) {
         this.dataService.saveBookingsAndUserInfo(payload).then((response) => {
             console.log('response while saving details ', response)
             alert('bookings successfully done');
@@ -423,9 +479,7 @@ export class UserbookingPage implements OnInit {
         }).catch((error) => {
             console.log('error while updating user details', error);
         })
-
     }
-
 
     checkIfBookingsExist(bookings) {
 
