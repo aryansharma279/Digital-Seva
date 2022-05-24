@@ -8,7 +8,7 @@ import { ModalController } from '@ionic/angular';
 
 
     constructor(public modalController: ModalController) { }
-    async presentModal(modalPage,props, callback) {
+    async presentModal(modalPage,props) {
       
       const modal = await this.modalController.create({
         component: modalPage,
@@ -16,11 +16,12 @@ import { ModalController } from '@ionic/angular';
       });
   
       
+      modal.onDidDismiss();
       
-      modal.onDidDismiss().then((response) => {
-        console.log('response', response);
-        callback(response);
-      })
+      // modal.onDidDismiss().then((response) => {
+      //   console.log('response', response);
+      //   callback(response);
+      // })
    
       
       return await modal.present();
@@ -31,4 +32,6 @@ import { ModalController } from '@ionic/angular';
   
   
   }
+
+
   

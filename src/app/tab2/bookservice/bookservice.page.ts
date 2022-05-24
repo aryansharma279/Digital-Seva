@@ -28,13 +28,7 @@ export class BookservicePage implements OnInit {
       UserbookingPage,
       {
         service: service,
-      },
-      (response) => {
-          if(response === 'close') {
-            this.modalCtrl.dismiss();
-          }
       }
-      
     );
 
   }

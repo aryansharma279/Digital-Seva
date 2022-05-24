@@ -29,8 +29,7 @@ export class Tab2Page {
       BookservicePage,
       {
         service: service,
-      },
-      () => {}
+      }
     );
 
   }
