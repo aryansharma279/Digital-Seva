@@ -259,6 +259,7 @@ export class UserbookingPage implements OnInit {
             } else {
                 console.log('details dont  exist')
 
+                await loading.dismiss();
             }
 
            

@@ -3,10 +3,11 @@ import {AngularFireDatabase} from '@angular/fire/compat/database/';
 import {AngularFireStorage, AngularFireStorageModule, AngularFireUploadTask} from '@angular/fire/compat/storage';
 import {ref, Storage} from '@angular/fire/storage';
 import {uploadString} from 'firebase/storage';
-import { Auth } from '@angular/fire/auth';
+import {Auth} from '@angular/fire/auth';
 
 import {Observable} from 'rxjs';
 import {tap, finalize} from 'rxjs/operators';
+
 
 import {callbackify} from 'util';
 // import * as firebase from '@angular/fire/compat';
@@ -15,6 +16,7 @@ import {callbackify} from 'util';
 export class DataService {
 
     ngFireUploadTask : AngularFireUploadTask;
+    location = 'uploads/';
 
     private dbpath = 'digitalseva';
     dbRef : firebase.default.database.Database;
@@ -25,44 +27,39 @@ export class DataService {
 
     fileUploadedPath : Observable < string >;
 
-    constructor(private storage : Storage, private auth: Auth,private db : AngularFireDatabase, private angularFireStorage : AngularFireStorage) {
+    constructor(private storage : Storage, private auth : Auth, private db : AngularFireDatabase, private angularFireStorage : AngularFireStorage) {
         this.dbRef = this.db.database;
     }
 
-    async fileUpload(email, type, file, callback) {
-        console.log('email', email);
-        console.log('type', type);
-        console.log('file', file);
-        // const emailSplitted = email.split('@')[0];
-        // console.log('email split', emailSplitted);
-        const storageRef = `${
-            this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}/${type}/file.png`;
-
-        // this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}/${type}`).update({
-        // status: status
-        // })
-        console.log('file storage path', storageRef);
-
-        const imageRef = this.angularFireStorage.ref(storageRef);
-
-        try {
-          this.angularFireStorage.upload(storageRef, file).snapshotChanges().pipe(finalize(() => {
-            console.log('file uploaded');
-            const refimg = imageRef.getDownloadURL();
-            console.log('ref', refimg);
-        }))
-        } catch(error) {
-          console.log('error', error);
-        }
+    /* Image name generator time */
+    imageName() {
+        const newTime = Math.floor(Date.now() / 1000);
+        return Math.floor(Math.random() * 20) + newTime;
     }
+
+    async storeImage(imageData : any) {
+        try {
+            const imageName = this.imageName();
+            return new Promise((resolve, reject) => {
+                const pictureRef = this.angularFireStorage.ref(this.location + imageName);
+                pictureRef.put(imageData).then(function () {
+                    pictureRef.getDownloadURL().subscribe((url : any) => {
+                        resolve(url);
+                    });
+                }).catch((error) => {
+                    reject(error);
+                });
+            });
+        } catch (e) {}
+    }
+
 
     getAllServices() {
         return this.dbRef.ref(`${
             this.dbpath
         }/services`);
     }
-    createUser(username,payload) {
+    createUser(username, payload) {
         return this.dbRef.ref(`${
             this.dbpath
         }/users/${username}`).set(payload);
@@ -107,15 +104,17 @@ export class DataService {
     }
 
 
-    updateUserInfo(email, user) {
-        // const emailSplitted = email.split('@')[0];
+    updateUserInfo(email, user) { // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}`).update(user)
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }`).update(user)
 
     }
 
-    updateBooking(email, booking) { /*
+    updateBooking(email, booking) {
+        /*
          name
          age
          email
@@ -128,30 +127,36 @@ export class DataService {
         // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`).update(booking)
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }/bookings`).update(booking)
 
 
     }
 
-    updateStatus(email, status) {
-        // const emailSplitted = email.split('@')[0];
+    updateStatus(email, status) { // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`).update({status: status})
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }/bookings`).update({status: status})
 
     }
 
 
     getUserInfo(email) {
 
-      
 
         console.log('path', `${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}`)
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }`)
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}`);
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }`);
 
         2
         // dnref/digitalseva/users/tushark/bookings - => {}
@@ -160,20 +165,24 @@ export class DataService {
     }
 
 
-    saveBookingsAndUserInfo(payload) {
-        
-          // Write the new post's data simultaneously in the posts list and the user's post list.
-    var updates = {};
-    updates[`${this.dbpath}/users/${this.getUserName(this.auth.currentUser.email)}/bookings`] = payload.userBookings;
-    updates[`${this.dbpath}/bookings`] = payload.adminBookings;
-  
-    // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+    saveBookingsAndUserInfo(payload) { // Write the new post's data simultaneously in the posts list and the user's post list.
+        var updates = {};
+        updates[`${
+                this.dbpath
+            }/users/${
+                this.getUserName(this.auth.currentUser.email)
+            }/bookings`] = payload.userBookings;
+        updates[`${
+                this.dbpath
+            }/bookings`] = payload.adminBookings;
 
-    return this.dbRef.ref().update(updates);
+        // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+
+        return this.dbRef.ref().update(updates);
     }
 
 
-    getUserName(email)  {
+    getUserName(email) {
         const emailSplitted = email.split('@')[0];
         return emailSplitted;
     }
@@ -182,7 +191,9 @@ export class DataService {
     getUserBookings() {
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`);
+        }/users/${
+            this.getUserName(this.auth.currentUser.email)
+        }/bookings`);
     }
     getAdminBookings() {
         return this.dbRef.ref(`${
