@@ -62,18 +62,10 @@ export class DataService {
             this.dbpath
         }/services`);
     }
-    createUser(payload) {
+    createUser(username,payload) {
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${payload}`).set(payload, (error) => {
-            if (error) { // The write failed...
-                console.log('error while adding the user', error);
-                return false;
-            } else { // Data saved successfully!
-                console.log('user Uploaded !');
-                return true;
-            }
-        });
+        }/users/${username}`).set(payload);
     }
     editService(payload, user) {
         // Get a key for a new Post.

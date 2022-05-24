@@ -233,7 +233,7 @@ export class UserbookingPage implements OnInit {
         console.log('email', this.auth.currentUser);
         this.dataService.getUserInfo(this.auth.currentUser.email).on('value', (snapshot) => {
             // this.render = 'render here'
-            // console.log('snapshot', snapshot.val());
+            console.log('snapshot', snapshot.val());
 
 
             const data = snapshot.val();

@@ -6,20 +6,7 @@ export class AuthService {
 
     constructor(private auth : Auth, private afAuth : AngularFireAuth) {}
     async register({email, password}) {
-        this.afAuth.createUserWithEmailAndPassword(email, password).then((response) => {
-
-          console.log('response', response);
-
-          return response.user;
-        }).catch((error) => { // console.log('error', error);
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            if (errorCode == 'auth/weak-password') {
-                alert('The password is too weak.');
-            } else {
-                alert(errorMessage);
-            }
-        })
+        return this.afAuth.createUserWithEmailAndPassword(email, password);
 
         // try {
         // const user = await createUserWithEmailAndPassword(
