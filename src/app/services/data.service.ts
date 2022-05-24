@@ -3,6 +3,7 @@ import {AngularFireDatabase} from '@angular/fire/compat/database/';
 import {AngularFireStorage, AngularFireStorageModule, AngularFireUploadTask} from '@angular/fire/compat/storage';
 import {ref, Storage} from '@angular/fire/storage';
 import {uploadString} from 'firebase/storage';
+import { Auth } from '@angular/fire/auth';
 
 import {Observable} from 'rxjs';
 import {tap, finalize} from 'rxjs/operators';
@@ -24,7 +25,7 @@ export class DataService {
 
     fileUploadedPath : Observable < string >;
 
-    constructor(private storage : Storage, private db : AngularFireDatabase, private angularFireStorage : AngularFireStorage) {
+    constructor(private storage : Storage, private auth: Auth,private db : AngularFireDatabase, private angularFireStorage : AngularFireStorage) {
         this.dbRef = this.db.database;
     }
 
@@ -32,11 +33,11 @@ export class DataService {
         console.log('email', email);
         console.log('type', type);
         console.log('file', file);
-        const emailSplitted = email.split('@')[0];
-        console.log('email split', emailSplitted);
+        // const emailSplitted = email.split('@')[0];
+        // console.log('email split', emailSplitted);
         const storageRef = `${
             this.dbpath
-        }/users/${emailSplitted}/${type}/file.png`;
+        }/users/${this.getUserName(this.auth.currentUser.email)}/${type}/file.png`;
 
         // this.dbRef.ref(`${this.dbpath}/users/${emailSplitted}/${type}`).update({
         // status: status
@@ -115,10 +116,10 @@ export class DataService {
 
 
     updateUserInfo(email, user) {
-        const emailSplitted = email.split('@')[0];
+        // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${emailSplitted}`).update(user)
+        }/users/${this.getUserName(this.auth.currentUser.email)}`).update(user)
 
     }
 
@@ -132,38 +133,69 @@ export class DataService {
       */
 
 
-        const emailSplitted = email.split('@')[0];
+        // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${emailSplitted}/bookings`).update(booking)
+        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`).update(booking)
 
 
     }
 
     updateStatus(email, status) {
-        const emailSplitted = email.split('@')[0];
+        // const emailSplitted = email.split('@')[0];
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${emailSplitted}/bookings`).update({status: status})
+        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`).update({status: status})
 
     }
 
 
     getUserInfo(email) {
 
-        const emailSplitted = email.split('@')[0];
+      
 
         console.log('path', `${
             this.dbpath
-        }/users/${emailSplitted}`)
+        }/users/${this.getUserName(this.auth.currentUser.email)}`)
         return this.dbRef.ref(`${
             this.dbpath
-        }/users/${emailSplitted}`);
+        }/users/${this.getUserName(this.auth.currentUser.email)}`);
 
         2
         // dnref/digitalseva/users/tushark/bookings - => {}
 
 
+    }
+
+
+    saveBookingsAndUserInfo(payload) {
+        
+          // Write the new post's data simultaneously in the posts list and the user's post list.
+    var updates = {};
+    updates[`${this.dbpath}/users/${this.getUserName(this.auth.currentUser.email)}/bookings`] = payload.userBookings;
+    updates[`${this.dbpath}/bookings`] = payload.adminBookings;
+  
+    // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+
+    return this.dbRef.ref().update(updates);
+    }
+
+
+    getUserName(email)  {
+        const emailSplitted = email.split('@')[0];
+        return emailSplitted;
+    }
+
+
+    getUserBookings() {
+        return this.dbRef.ref(`${
+            this.dbpath
+        }/users/${this.getUserName(this.auth.currentUser.email)}/bookings`);
+    }
+    getAdminBookings() {
+        return this.dbRef.ref(`${
+            this.dbpath
+        }/bookings`);
     }
 
 
