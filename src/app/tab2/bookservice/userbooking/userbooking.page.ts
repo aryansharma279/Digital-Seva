@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Auth} from '@angular/fire/auth';
 import {ActionSheetController, ModalController, Platform, ToastController} from '@ionic/angular';
 import {DataService} from 'src/app/services/data.service';
-
+import { Router } from '@angular/router';
 import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
 import {ThrowStmt} from '@angular/compiler';
 import {AngularFireStorage} from '@angular/fire/compat/storage';
@@ -23,7 +23,7 @@ export class UserbookingPage implements OnInit {
     adminBookings : any;
 
 
-    constructor(private mediaCapture : MediaCapture, private plt : Platform, private toastCtrl : ToastController, private file : File, private storage : AngularFireStorage, private camera : Camera, private actionSheetController : ActionSheetController, private modalCtrl : ModalController, private auth : Auth, private dataService : DataService) {
+    constructor(  private router: Router,private mediaCapture : MediaCapture, private plt : Platform, private toastCtrl : ToastController, private file : File, private storage : AngularFireStorage, private camera : Camera, private actionSheetController : ActionSheetController, private modalCtrl : ModalController, private auth : Auth, private dataService : DataService) {
         this.service = this.service;
     }
 
@@ -38,10 +38,11 @@ export class UserbookingPage implements OnInit {
     ngOnInit() {
 
         console.log('service data here', this.service)
-
+        this.checkifTheDataExistedOrNot();
+        
         this.getBookings();
         this.getAdminBookings();
-        this.checkifTheDataExistedOrNot();
+        // this.checkifTheDataExistedOrNot();
 
     }
 
@@ -233,7 +234,7 @@ export class UserbookingPage implements OnInit {
         console.log('email', this.auth.currentUser);
         this.dataService.getUserInfo(this.auth.currentUser.email).on('value', (snapshot) => {
             // this.render = 'render here'
-            console.log('snapshot', snapshot.val());
+            console.log('snapshot user info', snapshot.val());
 
 
             const data = snapshot.val();
@@ -307,12 +308,14 @@ export class UserbookingPage implements OnInit {
 
         if (result2.length > 0) { // booking existed
             alert('You have already booked this service from admin')
+          
             return;
         } else {
            const admin = {...this.usersDetails,...this.service};
            admin['email'] = this.auth.currentUser.email;
             this.adminBookings.push(admin
             )
+            
         }
         // this.
 
@@ -327,15 +330,16 @@ export class UserbookingPage implements OnInit {
         adminBookings: this.adminBookings
         }
         // console.log('payload to send', payload);
-
+       
 
         this.dataService.saveBookingsAndUserInfo(payload).then((response) => {
         console.log('response while saving details ', response)
             alert('bookings successfully done');
-   
+            this.modalCtrl.dismiss('close');
         }).catch((error) => {
         console.log('error while saving details ', error)
         })
+       
     }
 
     // checkIfBookingExist() {

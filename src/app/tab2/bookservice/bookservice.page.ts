@@ -15,13 +15,13 @@ export class BookservicePage implements OnInit {
    }
 
   ngOnInit() {
-
+    
 
   }
  dismiss() {
     console.log("back-btn working");
     this.modalCtrl.dismiss();
- 
+  
   } 
   proceedBooking(service) {
     this.modalService.presentModal(
@@ -29,6 +29,12 @@ export class BookservicePage implements OnInit {
       {
         service: service,
       },
+      (response) => {
+          if(response === 'close') {
+            this.modalCtrl.dismiss();
+          }
+      }
+      
     );
 
   }

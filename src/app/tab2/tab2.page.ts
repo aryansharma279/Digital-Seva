@@ -30,6 +30,7 @@ export class Tab2Page {
       {
         service: service,
       },
+      () => {}
     );
 
   }
