@@ -37,13 +37,18 @@ export class DataService {
         return Math.floor(Math.random() * 20) + newTime;
     }
 
-    async storeImage(imageData : any) {
+    async storeImage(file,imageData : any) {
         try {
-            const imageName = this.imageName();
+            console.log('image data', imageData);
+            // const imageName = this.imageName();
+            // console.log('imageName',imageName);
             return new Promise((resolve, reject) => {
-                const pictureRef = this.angularFireStorage.ref(this.location + imageName);
+                const pictureRef = this.angularFireStorage.ref(this.location + file);
+
+                console.log('pictureRef', pictureRef);
                 pictureRef.put(imageData).then(function () {
                     pictureRef.getDownloadURL().subscribe((url : any) => {
+                        console.log('url of upload', url);
                         resolve(url);
                     });
                 }).catch((error) => {

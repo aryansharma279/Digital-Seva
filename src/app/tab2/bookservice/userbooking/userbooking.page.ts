@@ -1,6 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {Auth} from '@angular/fire/auth';
-import {ActionSheetController, LoadingController, ModalController, Platform, ToastController} from '@ionic/angular';
+import {
+    ActionSheetController,
+    AlertController,
+    LoadingController,
+    ModalController,
+    Platform,
+    ToastController
+} from '@ionic/angular';
 import {DataService} from 'src/app/services/data.service';
 import {Router} from '@angular/router';
 import {Camera, CameraOptions} from '@awesome-cordova-plugins/camera/ngx';
@@ -10,6 +17,7 @@ import {AngularFireStorage} from '@angular/fire/compat/storage';
 import {File, FileEntry} from '@awesome-cordova-plugins/file/ngx';
 
 import {MediaCapture, MediaFile, CaptureError, CaptureImageOptions} from '@awesome-cordova-plugins/media-capture/ngx';
+import {finalize} from 'rxjs/operators';
 
 
 const MEDIA_FOLDER_NAME = 'all_media';
@@ -21,9 +29,12 @@ export class UserbookingPage implements OnInit {
     files = [];
     bookings : any = [];
     adminBookings : any = [];
+    base64Img : string;
+    userImg : string;
+    downloadURL : any;
 
 
-    constructor(private loadingCtrl: LoadingController,private router : Router, private mediaCapture : MediaCapture, private plt : Platform, private toastCtrl : ToastController, private file : File, private storage : AngularFireStorage, private camera : Camera, private actionSheetController : ActionSheetController, private modalCtrl : ModalController, private auth : Auth, private dataService : DataService) {
+    constructor(private alertCtrl : AlertController, private loadingCtrl : LoadingController, private router : Router, private mediaCapture : MediaCapture, private plt : Platform, private toastCtrl : ToastController, private file : File, private storage : AngularFireStorage, private camera : Camera, private actionSheetController : ActionSheetController, private modalCtrl : ModalController, private auth : Auth, private dataService : DataService) {
         this.service = this.service;
     }
 
@@ -52,18 +63,13 @@ export class UserbookingPage implements OnInit {
             buttons: [
                 {
                     text: "Load from Library",
-                    handler: () => { // this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+                    handler: () => {
+                        this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
                     }
                 }, {
                     text: "Use Camera",
                     handler: () => {
-                        this.mediaCapture.captureImage().then((data : MediaFile[]) => {
-                            console.log('data', data);
-                            if (data.length > 0) {
-                                this.copyFileToLocalDir(data[0].fullPath);
-                            }
-                        }, (err : CaptureError) => console.error(err));
-                        // this.takePicture(this.camera.PictureSourceType.CAMERA);
+                        this.takePicture(this.camera.PictureSourceType.CAMERA);
                     }
                 }, {
                     text: "Cancel",
@@ -72,6 +78,94 @@ export class UserbookingPage implements OnInit {
             ]
         });
         await actionSheet.present();
+    }
+
+
+    public takePicture(sourceType) { // Create options for the Camera Dialog
+        var options: CameraOptions = {
+            quality: 100,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            sourceType: sourceType,
+            encodingType: this.camera.EncodingType.JPEG,
+            saveToPhotoAlbum: false,
+            correctOrientation: true,
+            mediaType: this.camera.MediaType.ALLMEDIA
+        };
+
+        console.log("options for get picture", options);
+
+        // Get the data of an image
+        this.camera.getPicture(options).then((imageData) => {
+            console.log("image path data", imageData);
+
+            // imageData is either a base64 encoded string or a file URI
+            this.base64Img = 'data:image/jpeg;base64,' + imageData;
+
+            this.upload();
+
+
+            // const filename = imagePath.split("/").pop();
+            // this.dataService.storeImage(filename,imagePath).then((response) => {
+            //     console.log('uploading image', response);
+            // }).catch((error) => {
+            //     console.log('error while uploading', error);
+            // })
+
+            // this.base64Img = 'data:image/jpeg;base64,' + imagePath;
+            // this.userImg = this.base64Img;
+        }, (err) => {
+            console.log("Error: ", err);
+        });
+    }
+
+    upload(): void {
+        var currentDate = Date.now();
+        const file: any = this.base64ToImage(this.base64Img);
+        const filePath = `Images/${currentDate}`;
+        const fileRef = this.storage.ref(filePath);
+
+        const task = this.storage.upload(`Images/${currentDate}`, file);
+
+        
+        task.snapshotChanges().pipe(finalize(() => {
+            this.downloadURL = fileRef.getDownloadURL();
+            this.downloadURL.subscribe(downloadURL => {
+                if (downloadURL) {
+                    this.showSuccesfulUploadAlert();
+                }
+                console.log(downloadURL);
+            });
+        })).subscribe(url => {
+            if (url) {
+                console.log(url);
+            }
+        });
+    }
+
+    async showSuccesfulUploadAlert() {
+        const alert = await this.alertCtrl.create({
+            cssClass: 'basic-alert',
+            header: 'Uploaded',
+            subHeader: 'Image uploaded successful to Firebase storage',
+            message: 'Check Firebase storage.',
+            buttons: ['OK']
+        });
+
+        await alert.present();
+    }
+
+
+    base64ToImage(dataURI) {
+        const fileDate = dataURI.split(',');
+        // const mime = fileDate[0].match(/:(.*?);/)[1];
+        const byteString = atob(fileDate[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const int8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < byteString.length; i++) {
+            int8Array[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([arrayBuffer], {type: 'image/png'});
+        return blob;
     }
 
 
@@ -204,39 +298,16 @@ export class UserbookingPage implements OnInit {
             return {type: 'video/quicktime'};
         
 
+
     }
 
-    public takePicture(sourceType) {
 
-        var options: CameraOptions = {
-            quality: 100,
-            destinationType: this.camera.DestinationType.FILE_URI,
-            sourceType: sourceType,
-            saveToPhotoAlbum: false,
-            correctOrientation: true,
-            mediaType: this.camera.MediaType.ALLMEDIA
-        };
-
-        console.log("options for get picture", options);
-
-
-        this.camera.getPicture(options).then((imagePath) => {
-            console.log("image path data", imagePath);
-
-
-        }, (err) => {
-            console.log("Error: ", err);
-            alert(err);
-        });
-    }
     async checkifTheDataExistedOrNot() {
 
         console.log('email', this.auth.currentUser);
-        const loading = await this.loadingCtrl.create({
-            message: 'loading...'
-        });
+        const loading = await this.loadingCtrl.create({message: 'loading...'});
         await loading.present();
-        this.dataService.getUserInfo(this.auth.currentUser.email).on('value',async (snapshot) => { // this.render = 'render here'
+        this.dataService.getUserInfo(this.auth.currentUser.email).on('value', async (snapshot) => { // this.render = 'render here'
             console.log('snapshot user info', snapshot.val());
 
 
@@ -247,7 +318,7 @@ export class UserbookingPage implements OnInit {
             // age: 23,
             // address: 'wg 422'
             // }
-            
+
             if (data.hasOwnProperty('fullname') === true) {
                 console.log('details exist')
                 this.usersDetails.fullname = data.fullname;
@@ -262,7 +333,7 @@ export class UserbookingPage implements OnInit {
                 await loading.dismiss();
             }
 
-           
+
             // check if the user name exist
 
 
