@@ -13,4 +13,68 @@
 
 <ion-content>
 
+  <div class="slides ion-margin-bottom" >
+    <ion-slides [options]="slidesOptions" >
+      <ion-slide *ngFor="let service of allServices">
+        <ion-card>
+          <ion-card-header>
+            <div class="main">
+              <img src="https://cfl.dropboxstatic.com/static/images/logo_catalog/twitter-card-glyph_m1%402x.png">
+            </div>
+            <img class="files" src="https://i.ibb.co/jD8ypLq/files.jpg">
+          </ion-card-header>
+          <ion-card-content class="ion-text-left">
+            <ion-card-title class="ion-margin-bottom">{{service.name}}</ion-card-title>
+            <ion-card-subtitle class="ion-text-right">10/50GB</ion-card-subtitle>
+            <ion-progress-bar value="0.5" color="custom"></ion-progress-bar>
+          </ion-card-content>
+        </ion-card>
+      </ion-slide>
+
+      <ion-slide>
+        <ion-card>
+          <ion-card-header>
+            <div class="main">
+              <img src="https://www.freeiconspng.com/uploads/google-drive-icon-18.png">
+            </div>
+            <img class="files" src="https://i.ibb.co/jD8ypLq/files.jpg">
+          </ion-card-header>
+          <ion-card-content class="ion-text-left">
+            <ion-card-title class="ion-margin-bottom">Google Drive</ion-card-title>
+            <ion-card-subtitle class="ion-text-right">10/50GB</ion-card-subtitle>
+            <ion-progress-bar value="0.4" color="warning"></ion-progress-bar>
+          </ion-card-content>
+        </ion-card>
+      </ion-slide>
+
+    </ion-slides>
+  </div>
+
+  <div class="container" >
+
+    <h2>User Details</h2>
+
+    <ion-item lines="none">
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="3">
+            <ion-button color="light" fill="clear">
+              <ion-icon slot="icon-only" name="person-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="9" *ngFor="let detail of allDetails[0]">
+            <ion-label>
+							<h4>Name : {{detail.age}}</h4>
+						
+						</ion-label>
+          </ion-col>
+          
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+   
+
+  </div>
+
 </ion-content>

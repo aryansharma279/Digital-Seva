@@ -13,16 +13,23 @@
     </ion-toolbar>
   </ion-header>
 
+<ion-grid>
   <ion-list>
-     <ion-item *ngFor="let booking of bookings">
-          <ion-label>
-                <h3>Service: {{booking.fullname}}</h3>
-                <h6>Charges: {{booking.charges}}</h6>
-                <!-- <p></p> -->
-          </ion-label>
-          <ion-button color="primary">{{booking.status}}</ion-button>
-     </ion-item>
+    <ion-list-header>
+      <ion-label>All Bookings</ion-label>
+    </ion-list-header>
+    <ion-item lines="none"  *ngFor="let booking of bookings">
+      <ion-icon slot="start" name="cash" color="primary"></ion-icon>
+      <ion-label size="large" class="ion-text-wrap">
+        <b>Service: {{booking.name}}</b>
+        
+        <h5>
+          Charges: {{booking.charges}}
+        </h5>
+      </ion-label>
+      <ion-text slot="end" [color]="item?.amount > 0 ? 'success' : 'danger'">Status : {{booking.status}}</ion-text>
+    </ion-item>
   </ion-list>
-
+</ion-grid>
   
 </ion-content>

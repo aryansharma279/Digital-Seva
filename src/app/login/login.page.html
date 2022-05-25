@@ -1,24 +1,59 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
 
-<ion-content class="ion-padding">
-  <form [formGroup]="credentials" (ngSubmit)="login()">
-    <ion-item fill="solid" class="ion-margin-bottom">
-      <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
-      <ion-note slot="error" *ngIf="(email.dirty || email.touched) && email.errors">Email is Invalid</ion-note>
-    </ion-item>
-    <ion-item fill="solid" class="ion-margin-bottom">
-      <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
-      <ion-note slot="error" *ngIf="(email.dirty || email.touched) && email.errors">Password min length 6 characters</ion-note>
-    </ion-item>
-      
+  <ion-grid>
+    <ion-label color="white" class="ion-margin ion-padding-start">
+      WELCOME
+      <p>
+        <ion-text color="white" class="ion-margin ion-padding-start">To DIGITAL SEVA</ion-text>
+      </p>
+    </ion-label>
+  </ion-grid>
 
-
-    <ion-button expand="full" [disabled]="!credentials.valid" type="submit">Login</ion-button>
-    <ion-button expand="full" type="button" (click)="register()">Register</ion-button>
-
-  </form>
 </ion-content>
+
+<ion-footer class="ion-no-border">
+
+  <ion-row>
+
+    <ion-fab vertical="top" horizontal="end">
+      <ion-fab-button color="danger" (click)="login()">
+      
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <ion-list lines="full">
+      <ion-list-header class="ion-margin">
+        <ion-label>Sign In </ion-label>
+      </ion-list-header>
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form [formGroup]="credentials" (ngSubmit)="login()">
+
+          <div id="sign-in-button"></div>
+
+          <div class="ion-margin-vertical">
+           
+              
+            
+            <ion-item fill="solid" class="ion-margin-bottom">
+              <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+              <ion-note slot="error" *ngIf="(email.dirty || email.touched) && email.errors">Email is Invalid</ion-note>
+            </ion-item>
+            <ion-item fill="solid" class="ion-margin-bottom">
+              <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+              <ion-note slot="error" *ngIf="(email.dirty || email.touched) && email.errors">Password min length 6 characters</ion-note>
+            </ion-item>
+                <ion-button expand="full" [disabled]="!credentials.valid" type="submit">Login</ion-button>
+                <ion-label></ion-label>
+                <ion-button expand="full" type="button" (click)="register()">Register</ion-button>
+                
+       
+          </div>
+
+        </form>
+
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+
+</ion-footer>

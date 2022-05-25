@@ -1,9 +1,16 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Register</ion-title>
-  </ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-item lines="none" style="text-align: center;">
+   
+   <ion-button fill="clear" slot="start" color="dark" (click)="backToLogin()">
+     <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+   </ion-button>
+    <ion-avatar slot="end">
+      <img src="assets/icons/icon.png" />
+    </ion-avatar>
+  </ion-item>
 </ion-header>
 
+<!--
 <ion-content>
  <form [formGroup]="credentials">
     <ion-card>
@@ -18,4 +25,59 @@
     </ion-card>
 
  </form>
+</ion-content> -->
+<ion-content [fullscreen]="true">
+
+  <ion-grid>
+    <ion-label color="white" class="ion-margin ion-padding-start">
+      
+      <p>
+        <ion-text color="white" class="ion-margin ion-padding-start"></ion-text>
+      </p>
+    </ion-label>
+  </ion-grid>
+
 </ion-content>
+<ion-footer class="ion-no-border">
+
+  <ion-row>
+
+    <ion-fab vertical="top" horizontal="end">
+      <ion-fab-button color="danger" (click)="register()">
+      
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <ion-list lines="full">
+      <ion-list-header class="ion-margin">
+        <ion-label>Register Now</ion-label>
+      </ion-list-header>
+      <ion-item-group class="ion-margin-horizontal ion-margin-bottom">
+        <form [formGroup]="credentials">
+
+          <div id="sign-in-button"></div>
+
+          <div class="ion-margin-vertical">
+           
+              
+            
+                <ion-item>
+                  <ion-input type="email" placeholder="Enter Your Email" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item >
+                  <ion-input type="password" placeholder="Enter Your Password" formControlName="password"></ion-input>
+                </ion-item>
+                <ion-button expand="full" [disabled]="!credentials.valid" type="button" (click)="register()">Create Account</ion-button>
+                
+       
+          </div>
+
+        </form>
+
+      </ion-item-group>
+    </ion-list>
+  </ion-row>
+
+</ion-footer>
+

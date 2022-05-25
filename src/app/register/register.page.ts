@@ -29,6 +29,9 @@ export class RegisterPage implements OnInit {
       password: ['',[Validators.required, Validators.minLength(6)]],
     })
   }
+  backToLogin() {
+    this.router.navigate(['login']);
+  }
   async register() {
     const loading = await this.loadingCtrl.create();
     await loading.present();
@@ -105,4 +108,5 @@ export class RegisterPage implements OnInit {
     });
     await alert.present();
   }
+
 }
