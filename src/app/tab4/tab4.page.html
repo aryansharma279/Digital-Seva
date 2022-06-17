@@ -15,7 +15,7 @@
 
   <div class="slides ion-margin-bottom" >
     <ion-slides [options]="slidesOptions" >
-      <ion-slide *ngFor="let service of allServices">
+      <ion-slide >
         <ion-card>
           <ion-card-header>
             <div class="main">
@@ -24,7 +24,7 @@
             <img class="files" src="https://i.ibb.co/jD8ypLq/files.jpg">
           </ion-card-header>
           <ion-card-content class="ion-text-left">
-            <ion-card-title class="ion-margin-bottom">{{service.name}}</ion-card-title>
+            <ion-card-title class="ion-margin-bottom"></ion-card-title>
             <ion-card-subtitle class="ion-text-right">10/50GB</ion-card-subtitle>
             <ion-progress-bar value="0.5" color="custom"></ion-progress-bar>
           </ion-card-content>
@@ -40,8 +40,8 @@
             <img class="files" src="https://i.ibb.co/jD8ypLq/files.jpg">
           </ion-card-header>
           <ion-card-content class="ion-text-left">
-            <ion-card-title class="ion-margin-bottom">Google Drive</ion-card-title>
-            <ion-card-subtitle class="ion-text-right">10/50GB</ion-card-subtitle>
+            <ion-card-title class="ion-margin-bottom">My Documents</ion-card-title>
+            <ion-card-subtitle class="ion-text-right"></ion-card-subtitle>
             <ion-progress-bar value="0.4" color="warning"></ion-progress-bar>
           </ion-card-content>
         </ion-card>
@@ -53,18 +53,49 @@
   <div class="container" >
 
     <h2>User Details</h2>
+   
 
     <ion-item lines="none">
       <ion-grid>
-        <ion-row class="ion-align-items-center">
+        <ion-row class="ion-align-items-center" >
           <ion-col size="3">
             <ion-button color="light" fill="clear">
               <ion-icon slot="icon-only" name="person-outline"></ion-icon>
             </ion-button>
           </ion-col>
-          <ion-col size="9" *ngFor="let detail of allDetails[0]">
+          <ion-col size="9" >
             <ion-label>
-							<h4>Name : {{detail.age}}</h4>
+							<h4>Name : {{allDetails.fullname}}</h4>
+						
+						</ion-label>
+          </ion-col>
+          
+        </ion-row>
+        <ion-row class="ion-align-items-center" >
+          <ion-col size="3">
+            <ion-button color="light" fill="clear">
+              <ion-icon slot="icon-only" name="clipboard-outline"></ion-icon>
+              
+            </ion-button>
+          </ion-col>
+          <ion-col size="9" >
+            <ion-label>
+							<h4>Age : {{allDetails.age}}</h4>
+						
+						</ion-label>
+          </ion-col>
+          
+        </ion-row>
+      
+        <ion-row class="ion-align-items-center" >
+          <ion-col size="3">
+            <ion-button color="light" fill="clear">
+              <ion-icon slot="icon-only" name="map-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="9" >
+            <ion-label>
+							<h4>Address : {{allDetails.address}}</h4>
 						
 						</ion-label>
           </ion-col>
@@ -74,6 +105,7 @@
     </ion-item>
 
    
+
 
   </div>
 

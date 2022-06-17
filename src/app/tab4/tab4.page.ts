@@ -8,7 +8,7 @@ import { DataService } from '../services/data.service';
   styleUrls: ['./tab4.page.scss'],
 })
 export class Tab4Page implements OnInit {
-  allDetails: any[];
+  allDetails: any;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -22,7 +22,7 @@ export class Tab4Page implements OnInit {
       slidesPerView: 1.5
     }
   ngOnInit() {
-    this.getAllDetails();
+    this.getUserDetail();
   }
   getAllDetails() {
     this.dataService.getUserProfile().on('value', (snapshot) => {
@@ -34,5 +34,16 @@ export class Tab4Page implements OnInit {
     });
 
     console.log('get all Services', this.allDetails);
+
   }
+  getUserDetail() {
+
+    this.dataService.getUserProfile().on('value', (snapshot) => {
+        console.log('snapshot', snapshot.val());
+
+        this.allDetails = snapshot.val();
+        console.log('all deatils of user',this.allDetails);
+      })
+
+}
 }

@@ -60,11 +60,10 @@ export class DataService {
     getUserProfile() {
         const userName = this.auth.currentUser.email.split('@')[0]
         console.log(userName);
-     const userDetail= this.dbRef.ref(`${
+     return this.dbRef.ref(`${
             this.dbpath
         }/users/${userName}`);
-        console.log('detail of user',userDetail);
-        return userDetail; 
+        
     }
 
     getAllServices() {
